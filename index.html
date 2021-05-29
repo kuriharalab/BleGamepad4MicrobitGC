@@ -7,6 +7,31 @@
     <title>TeachableMachine to Microbit via BLE</title>
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="style.css">
+
+    <!-- PWA for iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="TM2Microbit" />
+    <link
+      rel="apple-touch-icon"
+      href="https://qurihara.github.io/publicdice/icon/ios/appicon-76@2x.png"
+    />
+
+    <!-- PWA for android -->
+    <link
+      rel="manifest"
+      href="https://qurihara.github.io/TM2Microbit/manifest.json"
+    />
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("https://qurihara.github.io/TM2Microbit/sw.js")
+          .then(reg => {
+            console.log("Service worker registered.", reg);
+          });
+      }
+    </script>
+
     <script type="text/javascript" src="bluejelly.js"></script>
   </head>
 
