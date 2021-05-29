@@ -19,6 +19,8 @@
         <input id="write_value" class="button" value="up" size="10">
         <button id="write" class="button">Write</button>
         <br>
+        <input id="tm_url" class="button" value="https://teachablemachine.withgoogle.com/models/EpV0qMaMS/" size="60">
+        <br>
         <input id="send_threshold" class="button" value="0.9" size="10">
         <button class="button" onclick="init()">Start</button>
         <hr>
@@ -85,20 +87,17 @@ ble.onWrite = function(uuid){
 //ボタンが押された時のイベント登録
 //--------------------------------------------------
 document.getElementById('write').addEventListener('click', function() {
-  //フォーマットに従って値を変換
-  const textEncoder = new TextEncoder();
-  const text_data = document.getElementById('write_value').value;
-  const text_data_encoded = textEncoder.encode(text_data + '\n');
-
-  //write
-  ble.write('UUID1', text_data_encoded);
+  writeText(document.getElementById('write_value').value);
 });
 
     // the link to your model provided by Teachable Machine export panel
-    const URL = "https://teachablemachine.withgoogle.com/models/EpV0qMaMS/";
+    let URL = "";//"https://teachablemachine.withgoogle.com/models/EpV0qMaMS/";
     let model, webcam, ctx, labelContainer, maxPredictions;
 
     async function init() {
+        writeText("start");
+        URL = document.getElementById('tm_url').value;
+
         const modelURL = URL + "model.json";
         const metadataURL = URL + "metadata.json";
 
