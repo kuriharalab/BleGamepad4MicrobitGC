@@ -1,12 +1,20 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <!--
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="BlueJelly">
     <meta name="viewport" content="width=640, maximum-scale=1.0, user-scalable=yes">
-    <title>TeachableMachine to Microbit via BLE</title>
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="style.css">
+    -->
+    <title>BLEGamepad4MicrobitGC</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://obniz.io/js/jquery-3.2.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
+    <script src="https://dz.plala.jp/svr/iOSdeviceorientationCheck.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://dz.plala.jp/svr/iOSdeviceorientationCheck.css">
 
     <!-- PWA for iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -35,33 +43,65 @@
     <script type="text/javascript" src="bluejelly.js"></script>
   </head>
 
-<body>
-<div class="container">
-    <div class="title margin">
-        <p id="title">TeachableMachine to Microbit via BLE</p>
-    </div> 
-    <div class="contents margin">
-        <input id="write_value" class="button" value="up" size="10">
-        <button id="write" class="button">Write</button>
-        <br>
-        <input id="tm_url" class="button" value="https://teachablemachine.withgoogle.com/models/TbSBXtj2O/" size="60">
-        <br>
-        <input id="send_threshold" class="button" value="0.9" size="10">
-        <button class="button" onclick="init()">Start</button>
-        <hr>
-        <div><canvas id="canvas"></canvas></div>
-        <div id="label-container"></div>
-          <div id="device_name"> </div>
-          <hr>
-          <div id="uuid_name"> </div>
-        <div id="status"> </div>
-
-    </div>
-    <div class="footer margin">
+  <body style="-webkit-touch-callout:none;-webkit-user-select:none;">
+    <img src="https://qurihara.github.io/gc_nes/img/famicon01_02.png" usemap="#Map" width="680" height="290">
+    <map name="Map">
+        <area id="nes_up" shape="rect" coords="95,110,139,154">
+        <area id="nes_left" shape="rect" coords="50,157,96,197">
+        <area id="nes_right" shape="rect" coords="139,158,185,196">
+        <area id="nes_down" shape="rect" coords="95,200,139,243">
+        <area id="nes_select" shape="rect" coords="251,202,207,222">
+        <area id="nes_start" shape="rect" coords="340,202,388,222">
+        <area id="nes_b" shape="rect" coords="458,179,514,234">
+        <area id="nes_a" shape="rect" coords="554,179,609,234">
+    </map>
+<!--
+    <br>
+    <button id="b10" style="width:150px;height:150px">10B</button>
+    <button id="b11" style="width:150px;height:150px">11A</button>
+    <br>
+    <button id="b0" style="width:150px;height:150px">00Y</button>
+    <button id="b1" style="width:150px;height:150px">01X</button>
+    <br>
+    <button id="b4" style="width:150px;height:150px">04L</button>
+    <button id="b5" style="width:150px;height:150px">05R</button>
+    <br>
+    <button id="b2" style="width:150px;height:150px">02ZL</button>
+    <button id="b3" style="width:150px;height:150px">03ZR</button>
+    <br>
+    <button id="b6" style="width:150px;height:150px">06Ls</button>
+    <button id="b7" style="width:150px;height:150px">07Rs</button>
+    <br>
+    <button id="b8" style="width:150px;height:150px">08+</button>
+    <button id="b9" style="width:150px;height:150px">09-</button>
+    <br>
+    <button id="up" style="width:150px;height:150px">up</button>
+    <br>
+    <button id="left" style="width:150px;height:150px">left</button>
+    <button id="right" style="width:150px;height:150px">right</button>
+    <br>
+    <button id="down" style="width:150px;height:150px">down</button>
+    <br>
+    <div id="ori"></div>
+-->
+    <div class="container">
+      <!--
+      <p id="title">BLEGamepad4MicrobitGC</p>
+      <div class="title margin">
+      </div> 
+      -->
+      <div class="contents margin">
+          <input id="write_value" class="button" value="up" size="10">
+          <button id="write" class="button">Write</button>
+          <div id="label-container"></div>
+            <div id="device_name"> </div>
+            <div id="uuid_name"> </div>
+          <div id="status"> </div>
       </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
+    <div class="footer margin"></div>
+    </div>
+    <br>
+
 <script>
 //--------------------------------------------------
 //Global変数
@@ -83,8 +123,8 @@ window.onload = function () {
 //Scan後の処理
 //--------------------------------------------------
 ble.onScan = function (deviceName) {
-  document.getElementById('device_name').innerHTML = deviceName;
-  document.getElementById('status').innerHTML = "found device!";
+  // document.getElementById('device_name').innerHTML = deviceName;
+  // document.getElementById('status').innerHTML = "found device!";
 }
 
 
@@ -94,8 +134,8 @@ ble.onScan = function (deviceName) {
 ble.onConnectGATT = function (uuid) {
   console.log('> connected GATT!');
 
-  document.getElementById('uuid_name').innerHTML = uuid;
-  document.getElementById('status').innerHTML = "connected GATT!";
+  // document.getElementById('uuid_name').innerHTML = uuid;
+  // document.getElementById('status').innerHTML = "connected GATT!";
 }
 
 //--------------------------------------------------
@@ -103,8 +143,8 @@ ble.onConnectGATT = function (uuid) {
 //--------------------------------------------------
 ble.onWrite = function(uuid){
   writing = false;
-  document.getElementById('uuid_name').innerHTML = uuid;
-  document.getElementById('status').innerHTML = "written data"
+  // document.getElementById('uuid_name').innerHTML = uuid;
+  // document.getElementById('status').innerHTML = "written data"
 }
 
 
@@ -115,94 +155,13 @@ document.getElementById('write').addEventListener('click', function() {
   writeText(document.getElementById('write_value').value);
 });
 
-    // the link to your model provided by Teachable Machine export panel
-    let URL = "";//"https://teachablemachine.withgoogle.com/models/EpV0qMaMS/";
-    let model, webcam, ctx, labelContainer, maxPredictions;
 
-    async function init() {
-        writeText("start");
-        URL = document.getElementById('tm_url').value;
+    // if (prediction[max_id].probability > send_threshold && prediction[max_id].className != lastsent){
+    //         writeText(prediction[max_id].className);
+    //         lastsent = prediction[max_id].className
+    //   }
 
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
 
-        // load the model and metadata
-        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-        // Note: the pose library adds a tmPose object to your window (window.tmPose)
-        model = await tmPose.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
-
-        // Convenience function to setup a webcam
-        const size = 400;//200;
-        const flip = true; // whether to flip the webcam
-        webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
-        await webcam.setup(); // request access to the webcam
-        await webcam.play();
-        window.requestAnimationFrame(loop);
-
-        // append/get elements to the DOM
-        const canvas = document.getElementById("canvas");
-        canvas.width = size; canvas.height = size;
-        ctx = canvas.getContext("2d");
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
-        }
-        
-    }
-
-    async function loop(timestamp) {
-        webcam.update(); // update the webcam frame
-        await predict();
-        window.requestAnimationFrame(loop);
-    }
-
-    async function predict() {
-        // Prediction #1: run input through posenet
-        // estimatePose can take in an image, video or canvas html element
-        const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
-        // Prediction 2: run input through teachable machine classification model
-        const prediction = await model.predict(posenetOutput);
-
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
-        }
-
-        // finally draw the poses
-        drawPose(pose);
-        sendByPrediction(prediction);
-    }
-
-    function drawPose(pose) {
-        if (webcam.canvas) {
-            ctx.drawImage(webcam.canvas, 0, 0);
-            // draw the keypoints and skeleton
-            if (pose) {
-                const minPartConfidence = 0.5;
-                tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
-                tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
-            }
-        }
-    }
-
-    async function sendByPrediction(prediction){
-      // get the best prediction
-      let max_id = 0;
-      let max = -1;
-      for (let i=0;i<maxPredictions;i++){
-        if (prediction[i].probability > max){
-          max_id = i;
-          max = prediction[i].probability;
-        }
-      }
-      send_threshold = Number(document.getElementById('send_threshold').value);
-      if (prediction[max_id].probability > send_threshold && prediction[max_id].className != lastsent){
-            writeText(prediction[max_id].className);
-            lastsent = prediction[max_id].className
-      }
-    }
     async function writeText(str){
         if (writing == false){
           writing = true;
@@ -211,6 +170,7 @@ document.getElementById('write').addEventListener('click', function() {
           const text_data_encoded = textEncoder.encode(text_data + '\n');
           //write
           ble.write('UUID1', text_data_encoded);
+          // console.log(str);
         }else{
           console.log("busy");
         }
@@ -218,7 +178,207 @@ document.getElementById('write').addEventListener('click', function() {
 
     var writing = false;
     var lastsent = "";
-    var send_threshold = 0.9;
+
+
+        var fps = 10;
+
+        /* forbid enlarging by double-taps */
+        var t = 0;
+        document.documentElement.addEventListener('touchend', function (e) {
+            var now = new Date().getTime();
+            if ((now - t) < 350) {
+                e.preventDefault();
+            }
+            t = now;
+        }, false);
+
+        var data = [];       
+
+        var manager = async function () {
+            if (data.length !== 0) {
+                send(data);
+                data = [];
+            }
+        }
+        setInterval(manager, 1000 / fps);
+
+        $('#nes_left').bind('touchstart mousedown', function () {
+                writeText("left");
+                send([{ "dpad": 4, "dur": -1 }]);
+            });
+            $('#nes_left').bind('touchend mouseup', function () {
+                writeText("neutral");
+                send([{ "dpad": 5, "dur": -1 }]);
+            });
+            $('#nes_up').bind('touchstart mousedown', function () {
+                writeText("up");
+                send([{ "dpad": 8, "dur": -1 }]);
+            });
+            $('#nes_up').bind('touchend mouseup', function () {
+                writeText("neutral");
+                send([{ "dpad": 5, "dur": -1 }]);
+            });
+            $('#nes_right').bind('touchstart mousedown', function () {
+                writeText("right");
+                send([{ "dpad": 6, "dur": -1 }]);
+            });
+            $('#nes_right').bind('touchend mouseup', function () {
+                writeText("neutral");
+                send([{ "dpad": 5, "dur": -1 }]);
+            });
+            $('#nes_down').bind('touchstart mousedown', function () {
+                writeText("down");
+                send([{ "dpad": 2, "dur": -1 }]);
+            });
+            $('#nes_down').bind('touchend mouseup', function () {
+                writeText("neutral");
+                send([{ "dpad": 5, "dur": -1 }]);
+            });
+            $('#nes_select').bind('touchstart mousedown', function () {
+                send([{ "btn": { "6": true }, "dur": -1 }]);
+            });
+            $('#nes_select').bind('touchend mouseup', function () {
+                send([{ "btn": { "6": false }, "dur": -1 }]);
+            });
+            $('#nes_start').bind('touchstart mousedown', function () {
+                send([{ "btn": { "7": true }, "dur": -1 }]);
+            })
+            $('#nes_start').bind('touchend mouseup', function () {
+                send([{ "btn": { "7": false }, "dur": -1 }]);
+            });
+            $('#nes_a').bind('touchstart mousedown', function () {
+                writeText("a");
+                send([{ "btn": { "0": true }, "dur": -1 }]);
+            });
+            $('#nes_a').bind('touchend mouseup', function () {
+                writeText("neutral");
+                send([{ "btn": { "0": false }, "dur": -1 }]);
+            });
+            $('#nes_b').bind('touchstart mousedown', function () {
+                writeText("b");
+                send([{ "btn": { "1": true }, "dur": -1 }]);
+            });
+            $('#nes_b').bind('touchend mouseup', function () {
+                writeText("neutral");
+                send([{ "btn": { "1": false }, "dur": -1 }]);
+            });
+
+
+
+            $('#left').bind('touchstart mousedown', function () {
+                send([{ "dpad": 4, "dur": -1 }]);
+            });
+            $('#left').bind('touchend mouseup', function () {
+                send([{ "dpad": 5, "dur": -1 }]);
+            });
+            $('#up').bind('touchstart mousedown', function () {
+                send([{ "dpad": 8, "dur": -1 }]);
+            });
+            $('#up').bind('touchend mouseup', function () {
+                send([{ "dpad": 5, "dur": -1 }]);
+            });
+            $('#right').bind('touchstart mousedown', function () {
+                send([{ "dpad": 6, "dur": -1 }]);
+            });
+            $('#right').bind('touchend mouseup', function () {
+                send([{ "dpad": 5, "dur": -1 }]);
+            });
+            $('#down').bind('touchstart mousedown', function () {
+                send([{ "dpad": 2, "dur": -1 }]);
+            });
+            $('#down').bind('touchend mouseup', function () {
+                send([{ "dpad": 5, "dur": -1 }]);
+            });
+
+            $('#b0').bind('touchstart mousedown', function () {
+                send([{ "btn": { "0": true }, "dur": -1 }]);
+            });
+            $('#b0').bind('touchend mouseup', function () {
+                send([{ "btn": { "0": false }, "dur": -1 }]);
+            });
+            $('#b1').bind('touchstart mousedown', function () {
+                send([{ "btn": { "1": true }, "dur": -1 }]);
+            });
+            $('#b1').bind('touchend mouseup', function () {
+                send([{ "btn": { "1": false }, "dur": -1 }]);
+            });
+            $('#b2').bind('touchstart mousedown', function () {
+                send([{ "btn": { "2": true }, "dur": -1 }]);
+            });
+            $('#b2').bind('touchend mouseup', function () {
+                send([{ "btn": { "2": false }, "dur": -1 }]);
+            });
+            $('#b3').bind('touchstart mousedown', function () {
+                send([{ "btn": { "3": true }, "dur": -1 }]);
+            });
+            $('#b3').bind('touchend mouseup', function () {
+                send([{ "btn": { "3": false }, "dur": -1 }]);
+            });
+            $('#b4').bind('touchstart mousedown', function () {
+                send([{ "btn": { "4": true }, "dur": -1 }]);
+            });
+            $('#b4').bind('touchend mouseup', function () {
+                send([{ "btn": { "4": false }, "dur": -1 }]);
+            });
+            $('#b5').bind('touchstart mousedown', function () {
+                send([{ "btn": { "5": true }, "dur": -1 }]);
+            });
+            $('#b5').bind('touchend mouseup', function () {
+                send([{ "btn": { "5": false }, "dur": -1 }]);
+            });
+            $('#b6').bind('touchstart mousedown', function () {
+                send([{ "btn": { "6": true }, "dur": -1 }]);
+            });
+            $('#b6').bind('touchend mouseup', function () {
+                send([{ "btn": { "6": false }, "dur": -1 }]);
+            });
+            $('#b7').bind('touchstart mousedown', function () {
+                send([{ "btn": { "7": true }, "dur": -1 }]);
+            })
+            $('#b7').bind('touchend mouseup', function () {
+                send([{ "btn": { "7": false }, "dur": -1 }]);
+            });
+            $('#b8').bind('touchstart mousedown', function () {
+                send([{ "btn": { "8": true }, "dur": -1 }]);
+            });
+            $('#b8').bind('touchend mouseup', function () {
+                send([{ "btn": { "8": false }, "dur": -1 }]);
+            });
+            $('#b9').bind('touchstart mousedown', function () {
+                send([{ "btn": { "9": true }, "dur": -1 }]);
+            });
+            $('#b9').bind('touchend mouseup', function () {
+                send([{ "btn": { "9": false }, "dur": -1 }]);
+            });
+            $('#b10').bind('touchstart mousedown', function () {
+                send([{ "btn": { "10": true }, "dur": -1 }]);
+            });
+            $('#b10').bind('touchend mouseup', function () {
+                send([{ "btn": { "10": false }, "dur": -1 }]);
+            });
+            $('#b11').bind('touchstart mousedown', function () {
+                send([{ "btn": { "11": true }, "dur": -1 }]);
+            });
+            $('#b11').bind('touchend mouseup', function () {
+                send([{ "btn": { "11": false }, "dur": -1 }]);
+            });
+        //
+        function getQueryParam(aQuery, aDefault) {
+            const tUrlParams = new URLSearchParams(window.location.search);
+            return (tUrlParams.has(aQuery)) ? tUrlParams.get(aQuery) : aDefault;
+        }
+
+        function send(gc_sentence) {
+          console.log(gc_sentence);
+            // let binary_sentence = [];
+            // let total_bytes = 0;
+            // for (let gc_word of gc_sentence) {
+            //     var bytes = GcOps.toBytes(gc_word);
+            //     binary_sentence = binary_sentence.concat(Array.from(bytes));
+            // }
+            // obniz.uart0.send(binary_sentence);
+        }
+
 
 
 </script>
