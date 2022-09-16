@@ -50,7 +50,7 @@
         <area id="nes_left" shape="rect" coords="50,157,96,197">
         <area id="nes_right" shape="rect" coords="139,158,185,196">
         <area id="nes_down" shape="rect" coords="95,200,139,243">
-        <area id="nes_select" shape="rect" coords="251,202,207,222">
+        <area id="nes_select" shape="rect" coords="251,202,299,222">
         <area id="nes_start" shape="rect" coords="340,202,388,222">
         <area id="nes_b" shape="rect" coords="458,179,514,234">
         <area id="nes_a" shape="rect" coords="554,179,609,234">
@@ -91,7 +91,7 @@
       </div> 
       -->
       <div class="contents margin">
-          <input id="write_value" class="button" value="up" size="10">
+          <input id="write_value" class="button" value="4" size="10">
           <button id="write" class="button">Write</button>
           <div id="label-container"></div>
             <div id="device_name"> </div>
@@ -203,165 +203,72 @@ document.getElementById('write').addEventListener('click', function() {
         setInterval(manager, 1000 / fps);
 
         $('#nes_left').bind('touchstart mousedown', function () {
-                writeText("left");
+                writeText("4");
                 send([{ "dpad": 4, "dur": -1 }]);
             });
             $('#nes_left').bind('touchend mouseup', function () {
-                writeText("neutral");
+                writeText("5");
                 send([{ "dpad": 5, "dur": -1 }]);
             });
             $('#nes_up').bind('touchstart mousedown', function () {
-                writeText("up");
+                writeText("8");
                 send([{ "dpad": 8, "dur": -1 }]);
             });
             $('#nes_up').bind('touchend mouseup', function () {
-                writeText("neutral");
+                writeText("5");
                 send([{ "dpad": 5, "dur": -1 }]);
             });
             $('#nes_right').bind('touchstart mousedown', function () {
-                writeText("right");
+                writeText("6");
                 send([{ "dpad": 6, "dur": -1 }]);
             });
             $('#nes_right').bind('touchend mouseup', function () {
-                writeText("neutral");
+                writeText("5");
                 send([{ "dpad": 5, "dur": -1 }]);
             });
             $('#nes_down').bind('touchstart mousedown', function () {
-                writeText("down");
+                writeText("2");
                 send([{ "dpad": 2, "dur": -1 }]);
             });
             $('#nes_down').bind('touchend mouseup', function () {
-                writeText("neutral");
+                writeText("5");
                 send([{ "dpad": 5, "dur": -1 }]);
             });
+
             $('#nes_select').bind('touchstart mousedown', function () {
+                writeText("A");
                 send([{ "btn": { "6": true }, "dur": -1 }]);
             });
             $('#nes_select').bind('touchend mouseup', function () {
+                writeText("a");
                 send([{ "btn": { "6": false }, "dur": -1 }]);
             });
             $('#nes_start').bind('touchstart mousedown', function () {
+                writeText("D");
                 send([{ "btn": { "7": true }, "dur": -1 }]);
             })
             $('#nes_start').bind('touchend mouseup', function () {
+                writeText("d");
                 send([{ "btn": { "7": false }, "dur": -1 }]);
             });
+
             $('#nes_a').bind('touchstart mousedown', function () {
-                writeText("a");
+                writeText("C");
                 send([{ "btn": { "0": true }, "dur": -1 }]);
             });
             $('#nes_a').bind('touchend mouseup', function () {
-                writeText("neutral");
+                writeText("c");
                 send([{ "btn": { "0": false }, "dur": -1 }]);
             });
             $('#nes_b').bind('touchstart mousedown', function () {
-                writeText("b");
+                writeText("B");
                 send([{ "btn": { "1": true }, "dur": -1 }]);
             });
             $('#nes_b').bind('touchend mouseup', function () {
-                writeText("neutral");
+                writeText("b");
                 send([{ "btn": { "1": false }, "dur": -1 }]);
             });
 
-
-
-            $('#left').bind('touchstart mousedown', function () {
-                send([{ "dpad": 4, "dur": -1 }]);
-            });
-            $('#left').bind('touchend mouseup', function () {
-                send([{ "dpad": 5, "dur": -1 }]);
-            });
-            $('#up').bind('touchstart mousedown', function () {
-                send([{ "dpad": 8, "dur": -1 }]);
-            });
-            $('#up').bind('touchend mouseup', function () {
-                send([{ "dpad": 5, "dur": -1 }]);
-            });
-            $('#right').bind('touchstart mousedown', function () {
-                send([{ "dpad": 6, "dur": -1 }]);
-            });
-            $('#right').bind('touchend mouseup', function () {
-                send([{ "dpad": 5, "dur": -1 }]);
-            });
-            $('#down').bind('touchstart mousedown', function () {
-                send([{ "dpad": 2, "dur": -1 }]);
-            });
-            $('#down').bind('touchend mouseup', function () {
-                send([{ "dpad": 5, "dur": -1 }]);
-            });
-
-            $('#b0').bind('touchstart mousedown', function () {
-                send([{ "btn": { "0": true }, "dur": -1 }]);
-            });
-            $('#b0').bind('touchend mouseup', function () {
-                send([{ "btn": { "0": false }, "dur": -1 }]);
-            });
-            $('#b1').bind('touchstart mousedown', function () {
-                send([{ "btn": { "1": true }, "dur": -1 }]);
-            });
-            $('#b1').bind('touchend mouseup', function () {
-                send([{ "btn": { "1": false }, "dur": -1 }]);
-            });
-            $('#b2').bind('touchstart mousedown', function () {
-                send([{ "btn": { "2": true }, "dur": -1 }]);
-            });
-            $('#b2').bind('touchend mouseup', function () {
-                send([{ "btn": { "2": false }, "dur": -1 }]);
-            });
-            $('#b3').bind('touchstart mousedown', function () {
-                send([{ "btn": { "3": true }, "dur": -1 }]);
-            });
-            $('#b3').bind('touchend mouseup', function () {
-                send([{ "btn": { "3": false }, "dur": -1 }]);
-            });
-            $('#b4').bind('touchstart mousedown', function () {
-                send([{ "btn": { "4": true }, "dur": -1 }]);
-            });
-            $('#b4').bind('touchend mouseup', function () {
-                send([{ "btn": { "4": false }, "dur": -1 }]);
-            });
-            $('#b5').bind('touchstart mousedown', function () {
-                send([{ "btn": { "5": true }, "dur": -1 }]);
-            });
-            $('#b5').bind('touchend mouseup', function () {
-                send([{ "btn": { "5": false }, "dur": -1 }]);
-            });
-            $('#b6').bind('touchstart mousedown', function () {
-                send([{ "btn": { "6": true }, "dur": -1 }]);
-            });
-            $('#b6').bind('touchend mouseup', function () {
-                send([{ "btn": { "6": false }, "dur": -1 }]);
-            });
-            $('#b7').bind('touchstart mousedown', function () {
-                send([{ "btn": { "7": true }, "dur": -1 }]);
-            })
-            $('#b7').bind('touchend mouseup', function () {
-                send([{ "btn": { "7": false }, "dur": -1 }]);
-            });
-            $('#b8').bind('touchstart mousedown', function () {
-                send([{ "btn": { "8": true }, "dur": -1 }]);
-            });
-            $('#b8').bind('touchend mouseup', function () {
-                send([{ "btn": { "8": false }, "dur": -1 }]);
-            });
-            $('#b9').bind('touchstart mousedown', function () {
-                send([{ "btn": { "9": true }, "dur": -1 }]);
-            });
-            $('#b9').bind('touchend mouseup', function () {
-                send([{ "btn": { "9": false }, "dur": -1 }]);
-            });
-            $('#b10').bind('touchstart mousedown', function () {
-                send([{ "btn": { "10": true }, "dur": -1 }]);
-            });
-            $('#b10').bind('touchend mouseup', function () {
-                send([{ "btn": { "10": false }, "dur": -1 }]);
-            });
-            $('#b11').bind('touchstart mousedown', function () {
-                send([{ "btn": { "11": true }, "dur": -1 }]);
-            });
-            $('#b11').bind('touchend mouseup', function () {
-                send([{ "btn": { "11": false }, "dur": -1 }]);
-            });
         //
         function getQueryParam(aQuery, aDefault) {
             const tUrlParams = new URLSearchParams(window.location.search);
