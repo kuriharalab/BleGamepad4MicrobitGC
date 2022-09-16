@@ -1,0 +1,280 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!--
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="BlueJelly">
+    <meta name="viewport" content="width=640, maximum-scale=1.0, user-scalable=yes">
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="style.css">
+    -->
+    <title>BLEGamepad4MicrobitGC</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://obniz.io/js/jquery-3.2.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
+    <script src="https://dz.plala.jp/svr/iOSdeviceorientationCheck.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://dz.plala.jp/svr/iOSdeviceorientationCheck.css">
+
+    <!-- PWA for iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="TM2Microbit" />
+    <link
+      rel="apple-touch-icon"
+      href="https://qurihara.github.io/publicdice/icon/ios/appicon-76@2x.png"
+    />
+
+    <!-- PWA for android -->
+    <link
+      rel="manifest"
+      href="https://qurihara.github.io/TM2Microbit/manifest.json"
+    />
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("https://qurihara.github.io/TM2Microbit/sw.js")
+          .then(reg => {
+            console.log("Service worker registered.", reg);
+          });
+      }
+    </script>
+
+    <script type="text/javascript" src="bluejelly.js"></script>
+  </head>
+
+  <body style="-webkit-touch-callout:none;-webkit-user-select:none;">
+    <img src="./img/hb-layout.jpg" usemap="#Map" width="633" height="321">
+    <map name="Map">
+        <area id="hb_left" shape="circle" coords="121,97,32">
+        <area id="hb_down" shape="circle" coords="200,100,32">
+        <area id="hb_right" shape="circle" coords="266,138,32">
+        <area id="hb_up" shape="circle" coords="301,269,38">
+        <area id="hb_x" shape="circle" coords="333,105,32">
+        <area id="hb_y" shape="circle" coords="397,65,32">
+        <area id="hb_a" shape="circle" coords="327,182,32">
+        <area id="hb_b" shape="circle" coords="400,141,32">
+        <area id="hb_rb" shape="circle" coords="472,65,32">
+        <area id="hb_lb" shape="circle" coords="545,90,32">
+        <area id="hb_rt" shape="circle" coords="473,142,32">
+        <area id="hb_lt" shape="circle" coords="546,165,32">
+    </map>
+
+    <div class="container">
+      <!--
+      <p id="title">BLEGamepad4MicrobitGC</p>
+      <div class="title margin">
+      </div> 
+      -->
+      <div class="contents margin">
+          <input id="write_value" class="button" value="4" size="10">
+          <button id="write" class="button">Write</button>
+          <div id="label-container"></div>
+            <div id="device_name"> </div>
+            <div id="uuid_name"> </div>
+          <div id="status"> </div>
+      </div>
+    <div class="footer margin"></div>
+    </div>
+    <br>
+
+<script>
+//--------------------------------------------------
+//Global変数
+//--------------------------------------------------
+//BlueJellyのインスタンス生成
+const ble = new BlueJelly();
+
+
+//--------------------------------------------------
+//ロード時の処理
+//--------------------------------------------------
+window.onload = function () {
+  //UUIDの設定
+  ble.setUUID("UUID1", BlueJelly.MICROBIT_UART_SERVICE, BlueJelly.MICROBIT_RX_CHARACTERISTIC);
+}
+
+
+//--------------------------------------------------
+//Scan後の処理
+//--------------------------------------------------
+ble.onScan = function (deviceName) {
+  // document.getElementById('device_name').innerHTML = deviceName;
+  // document.getElementById('status').innerHTML = "found device!";
+}
+
+
+//--------------------------------------------------
+//ConnectGATT後の処理
+//--------------------------------------------------
+ble.onConnectGATT = function (uuid) {
+  console.log('> connected GATT!');
+
+  // document.getElementById('uuid_name').innerHTML = uuid;
+  // document.getElementById('status').innerHTML = "connected GATT!";
+}
+
+//--------------------------------------------------
+//Write後の処理
+//--------------------------------------------------
+ble.onWrite = function(uuid){
+  writing = false;
+  // document.getElementById('uuid_name').innerHTML = uuid;
+  // document.getElementById('status').innerHTML = "written data"
+}
+
+
+//-------------------------------------------------
+//ボタンが押された時のイベント登録
+//--------------------------------------------------
+document.getElementById('write').addEventListener('click', function() {
+  writeText(document.getElementById('write_value').value);
+});
+
+
+    // if (prediction[max_id].probability > send_threshold && prediction[max_id].className != lastsent){
+    //         writeText(prediction[max_id].className);
+    //         lastsent = prediction[max_id].className
+    //   }
+
+
+    async function writeText(str){
+        if (writing == false){
+          writing = true;
+          const textEncoder = new TextEncoder();
+          const text_data = str;
+          const text_data_encoded = textEncoder.encode(text_data + '\n');
+          //write
+          ble.write('UUID1', text_data_encoded);
+          // console.log(str);
+        }else{
+          console.log("busy");
+        }
+    }
+
+    var writing = false;
+    var lastsent = "";
+
+
+        var fps = 10;
+
+        /* forbid enlarging by double-taps */
+        var t = 0;
+        document.documentElement.addEventListener('touchend', function (e) {
+            var now = new Date().getTime();
+            if ((now - t) < 350) {
+                e.preventDefault();
+            }
+            t = now;
+        }, false);
+
+        var data = [];       
+
+        var manager = async function () {
+            if (data.length !== 0) {
+                send(data);
+                data = [];
+            }
+        }
+        setInterval(manager, 1000 / fps);
+
+        $('#hb_left').bind('touchstart mousedown', function () {
+                writeText("4");
+            });
+            $('#hb_left').bind('touchend mouseup', function () {
+                writeText("5");
+            });
+            $('#hb_up').bind('touchstart mousedown', function () {
+                writeText("8");
+            });
+            $('#hb_up').bind('touchend mouseup', function () {
+                writeText("5");
+            });
+            $('#hb_right').bind('touchstart mousedown', function () {
+                writeText("6");
+            });
+            $('#hb_right').bind('touchend mouseup', function () {
+                writeText("5");
+            });
+            $('#hb_down').bind('touchstart mousedown', function () {
+                writeText("2");
+            });
+            $('#hb_down').bind('touchend mouseup', function () {
+                writeText("5");
+            });
+
+
+            $('#hb_y').bind('touchstart mousedown', function () {
+                writeText("A");
+            });
+            $('#hb_y').bind('touchend mouseup', function () {
+                writeText("a");
+            });
+            $('#hb_x').bind('touchstart mousedown', function () {
+                writeText("D");
+            })
+            $('#hb_x').bind('touchend mouseup', function () {
+                writeText("d");
+            });
+
+            $('#hb_a').bind('touchstart mousedown', function () {
+                writeText("C");
+            });
+            $('#hb_a').bind('touchend mouseup', function () {
+                writeText("c");
+            });
+            $('#hb_b').bind('touchstart mousedown', function () {
+                writeText("B");
+            });
+            $('#hb_b').bind('touchend mouseup', function () {
+                writeText("b");
+            });
+
+            $('#hb_rb').bind('touchstart mousedown', function () {
+                writeText("F");
+            });
+            $('#hb_rb').bind('touchend mouseup', function () {
+                writeText("f");
+            });
+            $('#hb_lb').bind('touchstart mousedown', function () {
+                writeText("E");
+            });
+            $('#hb_lb').bind('touchend mouseup', function () {
+                writeText("e");
+            });
+
+            $('#hb_rt').bind('touchstart mousedown', function () {
+                writeText("H");
+            });
+            $('#hb_rt').bind('touchend mouseup', function () {
+                writeText("h");
+            });
+            $('#hb_lt').bind('touchstart mousedown', function () {
+                writeText("G");
+            });
+            $('#hb_lt').bind('touchend mouseup', function () {
+                writeText("g");
+            });
+
+        //
+        function getQueryParam(aQuery, aDefault) {
+            const tUrlParams = new URLSearchParams(window.location.search);
+            return (tUrlParams.has(aQuery)) ? tUrlParams.get(aQuery) : aDefault;
+        }
+
+        function send(gc_sentence) {
+          console.log(gc_sentence);
+            // let binary_sentence = [];
+            // let total_bytes = 0;
+            // for (let gc_word of gc_sentence) {
+            //     var bytes = GcOps.toBytes(gc_word);
+            //     binary_sentence = binary_sentence.concat(Array.from(bytes));
+            // }
+            // obniz.uart0.send(binary_sentence);
+        }
+
+
+
+</script>
+</body>
+</html>
