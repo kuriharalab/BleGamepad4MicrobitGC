@@ -168,6 +168,13 @@ document.getElementById('write').addEventListener('click', function() {
             t = now;
         }, false);
 
+        //https://deecode.net/?p=1556
+        window.oncontextmenu = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        };
+
         var data = [];       
 
         var manager = async function () {
