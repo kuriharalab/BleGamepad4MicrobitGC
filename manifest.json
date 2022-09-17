@@ -13,7 +13,7 @@
         "type": "image/png"
       }
     ],
-    "start_url": "https://qurihara.github.io/TM2Microbit/index.html?utm_source=homescreen",
+    "start_url": "./index-hb.html?utm_source=homescreen",
     "display": "standalone",
     "background_color": "#FFFFFF",
     "theme_color": "#FFFFFF"
