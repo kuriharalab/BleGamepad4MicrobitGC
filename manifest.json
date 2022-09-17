@@ -1,6 +1,6 @@
 {
-    "name": "TM2Microbit",
-    "short_name": "TM2MB",
+    "name": "BLEGamepad4MicrobitGC",
+    "short_name": "Gamepad",
     "icons": [
       {
         "src": "https://qurihara.github.io/TM2Microbit/icon/android/drawable-xxxhdpi/ic_launcher.png",
