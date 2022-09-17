@@ -86,6 +86,7 @@
       <div class="contents margin">
           <input id="write_value" class="button" value="2,A,5,a" size="10">
           <button id="write" class="button">Write</button>
+          v 1.00
           <div id="label-container"></div>
             <div id="device_name"> </div>
             <div id="uuid_name"> </div>
@@ -217,9 +218,9 @@ document.getElementById('write').addEventListener('click', function() {
               d = 1;
             }else if (dpad[6] > 0){
               d = 3;
+            }else{
+              d = 2;
             }
-          }else{
-            d = 2;
           }
           
           if (dpad[8] > 0){
@@ -227,9 +228,9 @@ document.getElementById('write').addEventListener('click', function() {
               d = 7;
             }else if (dpad[6] > 0){
               d = 9;
+            }else{
+              d = 8;
             }
-          }else{
-            d = 8;
           }
 
           // 2 opossite buttons
@@ -244,7 +245,9 @@ document.getElementById('write').addEventListener('click', function() {
 
           // 4buttons
           if (dpad[2] > 0 && dpad[4] > 0 && dpad[6] > 0 && dpad[8] > 0) d = 8;
-
+          
+          // console.log(dpad);
+          // console.log(d);
           return String(d);
         }
 
