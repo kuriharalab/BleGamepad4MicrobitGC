@@ -151,7 +151,7 @@ var BlueJelly = function(){
       return this.connectGATT(uuid);
     })
     .then( () => {
-      console.log('Execute : writeValue');
+      // console.log('Execute : writeValue');
       data = Uint8Array.from(array_value);
       return this.dataCharacteristic.writeValue(data);
     })
