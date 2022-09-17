@@ -160,7 +160,8 @@ document.getElementById('write').addEventListener('click', function() {
           writing = true;
           const textEncoder = new TextEncoder();
           const text_data = str;
-          const text_data_encoded = textEncoder.encode(text_data + '\n');
+          // const text_data_encoded = textEncoder.encode(text_data + '\n');
+          const text_data_encoded = textEncoder.encode(text_data + ',');
           //write
           ble.write('UUID1', text_data_encoded);
           // console.log(str);
