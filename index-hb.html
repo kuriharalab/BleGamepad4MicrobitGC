@@ -84,7 +84,7 @@
       </div> 
       -->
       <div class="contents margin">
-          <input id="write_value" class="button" value="4" size="10">
+          <input id="write_value" class="button" value="2,A,5,a" size="10">
           <button id="write" class="button">Write</button>
           <div id="label-container"></div>
             <div id="device_name"> </div>
@@ -138,6 +138,7 @@ ble.onWrite = function(uuid){
   writing = false;
   // document.getElementById('uuid_name').innerHTML = uuid;
   // document.getElementById('status').innerHTML = "written data"
+  manager();
 }
 
 
@@ -149,32 +150,31 @@ document.getElementById('write').addEventListener('click', function() {
 });
 
 
-    // if (prediction[max_id].probability > send_threshold && prediction[max_id].className != lastsent){
-    //         writeText(prediction[max_id].className);
-    //         lastsent = prediction[max_id].className
-    //   }
-
-
     async function writeText(str){
+      st = st + str + ",";
+      manager();
+    }
+
+    // async function writeTextDirect(str){
+    //   st = st + str + ",";
+    //   manager();
+    // }
+
+    async function _writeText(str){
         if (writing == false){
           writing = true;
           const textEncoder = new TextEncoder();
-          const text_data = str;
-          // const text_data_encoded = textEncoder.encode(text_data + '\n');
-          const text_data_encoded = textEncoder.encode(text_data + ',');
-          //write
+          const text_data_encoded = textEncoder.encode(str);
           ble.write('UUID1', text_data_encoded);
-          // console.log(str);
+          return true;
         }else{
           console.log("busy");
+          return false;
         }
     }
 
     var writing = false;
-    var lastsent = "";
 
-
-        var fps = 10;
 
         /* forbid enlarging by double-taps */
         var t = 0;
@@ -186,6 +186,7 @@ document.getElementById('write').addEventListener('click', function() {
             t = now;
         }, false);
 
+        /* forbid contextmenu pop up when tap&hold */
         //https://deecode.net/?p=1556
         window.oncontextmenu = function(event) {
             event.preventDefault();
@@ -193,13 +194,15 @@ document.getElementById('write').addEventListener('click', function() {
             return false;
         };
 
-        var data = [];       
+        var fps = 250;
+        var st = "";
 
         var manager = async function () {
-            if (data.length !== 0) {
-                send(data);
-                data = [];
+          if (st !== ""){
+            if(_writeText(st)){
+              st = "";
             }
+          }
         }
         setInterval(manager, 1000 / fps);
 
@@ -230,6 +233,7 @@ document.getElementById('write').addEventListener('click', function() {
 
 
             $('#hb_y').bind('touchstart mousedown', function () {
+                // writeTextDirect("A");
                 writeText("A");
             });
             $('#hb_y').bind('touchend mouseup', function () {
@@ -281,24 +285,10 @@ document.getElementById('write').addEventListener('click', function() {
                 writeText("g");
             });
 
-        //
-        function getQueryParam(aQuery, aDefault) {
-            const tUrlParams = new URLSearchParams(window.location.search);
-            return (tUrlParams.has(aQuery)) ? tUrlParams.get(aQuery) : aDefault;
-        }
-
-        function send(gc_sentence) {
-          console.log(gc_sentence);
-            // let binary_sentence = [];
-            // let total_bytes = 0;
-            // for (let gc_word of gc_sentence) {
-            //     var bytes = GcOps.toBytes(gc_word);
-            //     binary_sentence = binary_sentence.concat(Array.from(bytes));
-            // }
-            // obniz.uart0.send(binary_sentence);
-        }
-
-
+        // function getQueryParam(aQuery, aDefault) {
+        //     const tUrlParams = new URLSearchParams(window.location.search);
+        //     return (tUrlParams.has(aQuery)) ? tUrlParams.get(aQuery) : aDefault;
+        // }
 
 </script>
 </body>
