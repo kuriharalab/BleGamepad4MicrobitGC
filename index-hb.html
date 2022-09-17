@@ -206,29 +206,95 @@ document.getElementById('write').addEventListener('click', function() {
         }
         setInterval(manager, 1000 / fps);
 
-        $('#hb_left').bind('touchstart mousedown', function () {
-                writeText("4");
+        var dpad = [0,0,0,0,0,0,0,0,0,0];
+        function updateDpad(){
+          let d = 5;
+          if (dpad[4] > 0) d = 4;
+          if (dpad[6] > 0) d = 6;
+
+          if (dpad[2] > 0){
+            if(dpad[4] > 0){
+              d = 1;
+            }else if (dpad[6] > 0){
+              d = 3;
+            }
+          }else{
+            d = 2;
+          }
+          
+          if (dpad[8] > 0){
+            if(dpad[4] > 0){
+              d = 7;
+            }else if (dpad[6] > 0){
+              d = 9;
+            }
+          }else{
+            d = 8;
+          }
+
+          // 2 opossite buttons
+          if (dpad[4] > 0 && dpad[6] > 0) d = 5;
+          if (dpad[2] > 0 && dpad[8] > 0) d = 8;
+
+          // 3buttons
+          if (dpad[2] > 0 && dpad[4] > 0 && dpad[6] > 0) d = 2;
+          if (dpad[2] > 0 && dpad[4] > 0 && dpad[8] > 0) d = 7;
+          if (dpad[2] > 0 && dpad[6] > 0 && dpad[8] > 0) d = 9;
+          if (dpad[4] > 0 && dpad[6] > 0 && dpad[8] > 0) d = 8;
+
+          // 4buttons
+          if (dpad[2] > 0 && dpad[4] > 0 && dpad[6] > 0 && dpad[8] > 0) d = 8;
+
+          return String(d);
+        }
+
+            $('#hb_left').bind('touchstart mousedown', function () {
+                dpad[4] = 1;
+                let d = updateDpad();
+                writeText(d);
+                // writeText("4");
             });
             $('#hb_left').bind('touchend mouseup', function () {
-                writeText("5");
+                dpad[4] = 0;
+                let d = updateDpad();
+                writeText(d);
+                // writeText("5");
             });
             $('#hb_up').bind('touchstart mousedown', function () {
-                writeText("8");
+                dpad[8] = 1;
+                let d = updateDpad();
+                writeText(d);
+                // writeText("8");
             });
             $('#hb_up').bind('touchend mouseup', function () {
-                writeText("5");
+                dpad[8] = 0;
+                let d = updateDpad();
+                writeText(d);
+                // writeText("5");
             });
             $('#hb_right').bind('touchstart mousedown', function () {
-                writeText("6");
+                dpad[6] = 1;
+                let d = updateDpad();
+                writeText(d);
+                // writeText("6");
             });
             $('#hb_right').bind('touchend mouseup', function () {
-                writeText("5");
+                dpad[6] = 0;
+                let d = updateDpad();
+                writeText(d);
+                // writeText("5");
             });
             $('#hb_down').bind('touchstart mousedown', function () {
-                writeText("2");
+                dpad[2] = 1;
+                let d = updateDpad();
+                writeText(d);
+                // writeText("2");
             });
             $('#hb_down').bind('touchend mouseup', function () {
-                writeText("5");
+                dpad[2] = 0;
+                let d = updateDpad();
+                writeText(d);
+                // writeText("5");
             });
 
 
