@@ -12,11 +12,13 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://obniz.io/js/jquery-3.2.1.min.js"></script>
+    <!--
     <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
     <script src="https://dz.plala.jp/svr/iOSdeviceorientationCheck.js"></script>
     <link rel="stylesheet" type="text/css" href="https://dz.plala.jp/svr/iOSdeviceorientationCheck.css">
+    -->
 
-    <!-- PWA for iOS -->
+    <!-- PWA for iOS 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="BLEGamepad4MicrobitGC" />
@@ -24,8 +26,8 @@
       rel="apple-touch-icon"
       href="https://qurihara.github.io/publicdice/icon/ios/appicon-76@2x.png"
     />
-
-    <!-- PWA for android -->
+-->
+    <!-- PWA for android
     <link
       rel="manifest"
       href="./manifest.json"
@@ -39,8 +41,8 @@
           });
       }
     </script>
-
-    <script type="text/javascript" src="bluejelly.js"></script>
+ -->
+    <script type="text/javascript" src="https://kuriharalab.github.io/BleGamepad4MicrobitGC/bluejelly.js"></script>
   </head>
 
   <body style="-webkit-touch-callout:none;-webkit-user-select:none;">
@@ -61,7 +63,7 @@
         <area id="hb_lt" shape="circle" coords="546,165,32">
     </map>
     -->
-    <img src="./hb-layout.jpg" usemap="#Map" width="1266" height="642">
+    <img src="https://kuriharalab.github.io/BleGamepad4MicrobitGC/hb-layout.jpg" usemap="#Map" width="1266" height="642">
     <map name="Map">
       <area id="hb_left" shape="circle" coords="242,194,64">
       <area id="hb_down" shape="circle" coords="400,200,64">
@@ -139,7 +141,7 @@ ble.onWrite = function(uuid){
   writing = false;
   // document.getElementById('uuid_name').innerHTML = uuid;
   // document.getElementById('status').innerHTML = "written data"
-  manager();
+  // manager();
 }
 
 
@@ -153,7 +155,7 @@ document.getElementById('write').addEventListener('click', function() {
 
     async function writeText(str){
       st = st + str + ",";
-      manager();
+      // manager();
     }
 
     // async function writeTextDirect(str){
@@ -195,7 +197,7 @@ document.getElementById('write').addEventListener('click', function() {
             return false;
         };
 
-        var fps = 250;
+        var fps = 100;//250;
         var st = "";
 
         var manager = async function () {
